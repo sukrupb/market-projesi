@@ -5,37 +5,53 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 # --- SAYFA AYARLARI ---
-st.set_page_config(page_title="Hızlı Market Deneyi", page_icon="🛵", layout="wide")
+# "layout='wide'" kaldırıldı ki ürünler çok yayılmasın, daha derli toplu dursun.
+st.set_page_config(page_title="Hızlı Market Deneyi", page_icon="🛵")
 
-# --- CSS İLE GETİR TEMASI (MOR VE SARI) ---
+# --- CSS İLE GETİR TEMASI (MOR ARKA PLAN - BEYAZ YAZI) VE RESİM DÜZENİ ---
 st.markdown("""
     <style>
-    /* Ana Arka Plan ve Yazı Tipleri */
+    /* 1. ANA TEMA RENGİ: GETİR MORU */
     .stApp {
-        background-color: #f7f7f7;
+        background-color: #5d3ebc !important;
     }
-    h1, h2, h3 {
-        color: #5d3ebc !important; /* Getir Moru */
-        font-weight: 800 !important;
+    /* 2. TÜM YAZILARI BEYAZ YAP (Okunabilirlik için) */
+    h1, h2, h3, h4, h5, h6, p, span, div, label {
+        color: white !important;
     }
-    /* Buton Tasarımı (Getir Sarısı) */
+    /* 3. RESİM BOYUTLARINI SABİTLEME (Grid Düzeni İçin Kritik) */
+    div[data-testid="column"] img {
+        height: 150px !important;       /* Hepsini 150px yüksekliğe zorla */
+        width: 100% !important;         /* Genişliği kutuya yay */
+        object-fit: cover !important;   /* Resmi esnetme, kutuya sığacak şekilde kırp */
+        border-radius: 12px !important; /* Kenarları yuvarlat */
+        border: 2px solid #ffd300 !important; /* Etrafına sarı çerçeve ekle */
+    }
+    /* 4. BUTON TASARIMI (GETİR SARISI) */
     div.stButton > button:first-child {
         background-color: #ffd300 !important;
-        color: #5d3ebc !important;
+        color: #5d3ebc !important; /* Buton yazısı mor */
         border: none !important;
         border-radius: 8px !important;
         font-weight: 900 !important;
         padding: 10px !important;
-        transition: 0.2s;
     }
     div.stButton > button:hover {
-        background-color: #ffc000 !important;
-        transform: scale(1.03);
-    }
-    /* Üst Bilgi Kutuları (Sepet Tutarı vs) */
-    div[data-testid="stMetricValue"] {
+        background-color: #ffecb3 !important; /* Üzerine gelince açık sarı */
         color: #5d3ebc !important;
-        font-weight: 900 !important;
+        border: 2px solid #5d3ebc !important;
+    }
+    /* 5. ÜST BİLGİ KUTULARI (Metric) */
+    div[data-testid="stMetricLabel"] {
+        color: #e0e0e0 !important; /* Etiketler açık gri */
+    }
+    div[data-testid="stMetricValue"] {
+        color: #ffd300 !important; /* Rakamlar sarı */
+    }
+    /* Form elemanları (Selectbox vb.) arka planı */
+    div[data-baseweb="select"] > div {
+        background-color: #4a329c !important; /* Daha koyu mor */
+        color: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -52,8 +68,8 @@ def google_sheet_baglan():
     except Exception as e:
         return None
 
-# --- YENİ ÜRÜN KATALOĞU (GERÇEK RESİMLİ) ---
-# Telif hakkı olmaması için yüksek kaliteli stok ve temsili linkler kullanıldı.
+# --- ÜRÜN KATALOĞU ---
+# Resimlerin hepsi CSS ile aynı boyuta getirilecek.
 urunler = {
     "Atıştırmalık & Cips": [
         {"ad": "Patates Cipsi (Büyük Boy)", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1566478989037-e124c1B55523?w=400&q=80"},
@@ -92,8 +108,6 @@ def veriyi_kaydet():
         data = st.session_state.kullanici_verisi.copy()
         toplam_tutar = sum(item['fiyat'] for item in st.session_state.sepet)
         sepet_icerigi = ", ".join([item['ad'] for item in st.session_state.sepet])
-        
-        # Dürtüsel Ürünler Analizi
         durtusel_liste = ["Patates Cipsi (Büyük Boy)", "Sütlü Çikolata", "Kola (Kutu 330ml)", "Enerji İçeceği", "Çubuk Dondurma (Bademli)"]
         durtusel_skor = sum(1 for item in st.session_state.sepet if item['ad'] in durtusel_liste)
         
@@ -114,7 +128,7 @@ def veriyi_kaydet():
             sheet.append_row(satir)
             return True
         else:
-            st.error("Bağlantı hatası. API ayarlarını kontrol et.")
+            st.error("Bağlantı hatası.")
             return False
     except Exception as e:
         st.error(f"Hata: {e}")
@@ -124,20 +138,25 @@ def veriyi_kaydet():
 if st.session_state.sayfa == 'anket':
     st.title("Hızlı Market Tüketim Anketi 🛵")
     st.markdown("""
-    **Senaryo:** Karnın aç veya canın bir şeyler çekiyor. Uygulamada **400 TL** bakiyen var. 
+    <div style='background-color: #4a329c; padding: 15px; border-radius: 10px;'>
+    <b>Senaryo:</b> Karnın aç veya canın bir şeyler çekiyor. Uygulamada <b>400 TL</b> bakiyen var. 
     İstediğin ürünleri sepetine ekle ve siparişi tamamla. (Ürünler 10-15 dk içinde kapında varsayıyoruz).
-    """)
+    </div>
+    """, unsafe_allow_html=True)
     
+    st.write("") # Boşluk
+
     with st.form("giris_formu"):
         col1, col2 = st.columns(2)
         with col1:
-            cinsiyet = st.selectbox("Cinsiyetiniz:", ["Kadın", "Erkek"])
+            cinsiyet = st.selectbox("Cinsiyetiniz:", ["Kadın", "Erkek", "Belirtmek İstemiyorum"])
             sinif = st.selectbox("Sınıfınız:", ["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf"])
         with col2:
             yurt_ev = st.selectbox("Yaşam Alanı:", ["KYK Yurdu", "Özel Yurt", "Öğrenci Evi", "Aile Yanı"])
             aclik_durumu = st.slider("Şu an fiziksel olarak ne kadar açsın? (1: Tok, 5: Çok Aç)", 1, 5, 3)
         
-        if st.form_submit_button("🛒 Markete Gir (Bakiye: 400 TL)"):
+        st.write("") # Boşluk
+        if st.form_submit_button("🛒 Markete Gir (Bakiye: 400 TL)", use_container_width=True):
             st.session_state.kullanici_verisi = {
                 "Cinsiyet": cinsiyet, "Sinif": sinif, "Yurt_Ev": yurt_ev, "Aclik_Durumu": aclik_durumu
             }
@@ -146,22 +165,24 @@ if st.session_state.sayfa == 'anket':
 
 # --- SAYFA 2: SİPARİŞ EKRANI (Menü Görünümü) ---
 elif st.session_state.sayfa == 'market':
-    # Üst Bilgi Paneli (Getir Tarzı Yapışkan Hissiyat)
     tutar = sum(item['fiyat'] for item in st.session_state.sepet)
     butce = 400
     kalan = butce - tutar
     
     st.title("Dakikalar İçinde Kapında! ⚡")
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Kart Limiti", f"{butce} TL")
-    col2.metric("Sepet Tutarı", f"{tutar} TL")
-    col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
-
+    # Üst Bilgi Paneli
+    with st.container():
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Kart Limiti", f"{butce} TL")
+        col2.metric("Sepet Tutarı", f"{tutar} TL")
+        col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
+    
     if kalan < 0:
         st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
     
-    col_onay, col_bosalt = st.columns([1, 1])
+    # Butonlar
+    col_onay, col_bosalt = st.columns([2, 1])
     with col_onay:
         if st.button("💳 Siparişi Onayla", use_container_width=True):
             if kalan < 0:
@@ -174,27 +195,26 @@ elif st.session_state.sayfa == 'market':
                     st.session_state.sayfa = 'bitis'
                     st.rerun()
     with col_bosalt:
-        if st.button("🗑️ Sepeti Boşalt", use_container_width=True):
+        if st.button("🗑️ Boşalt", use_container_width=True):
             st.session_state.sepet = []
             st.rerun()
 
     st.markdown("---")
 
-    # Ürün Listeleme (Menü Tarzı, Resimli)
+    # Ürün Listeleme (Grid Yapısı)
     for kategori, urun_listesi in urunler.items():
         st.subheader(kategori)
-        cols = st.columns(4) # Yan yana 4 ürün
+        # "wide" modu kapattığımız için 4 yerine 3 sütun daha iyi durur
+        cols = st.columns(3) 
         for i, urun in enumerate(urun_listesi):
-            with cols[i % 4]:
-                st.markdown("<div class='product-card'>", unsafe_allow_html=True)
-                # GERÇEK RESİM BURADA ÇAĞRILIYOR
+            with cols[i % 3]:
+                # Resim CSS ile kontrol ediliyor
                 st.image(urun['resim'], use_container_width=True) 
                 st.markdown(f"**{urun['ad']}**")
                 st.write(f"*{urun['fiyat']} TL*")
                 if st.button("Sepete Ekle", key=f"{kategori}_{i}", use_container_width=True):
                     sepete_ekle(urun['ad'], urun['fiyat'])
                     st.rerun()
-                st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
 # --- SAYFA 3: BİTİŞ ---
@@ -204,8 +224,11 @@ elif st.session_state.sayfa == 'bitis':
     
     sepet = st.session_state.sepet
     st.write("### Sipariş Özeti:")
+    
+    # Veri tablosunu beyaz yapalım ki okunsun
+    st.markdown("""<style>div[data-testid="stDataFrame"] {background-color: white; padding: 10px; border-radius: 10px;}</style>""", unsafe_allow_html=True)
     sepet_df = pd.DataFrame(sepet)
-    st.dataframe(sepet_df)
+    st.dataframe(sepet_df, use_container_width=True)
         
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
