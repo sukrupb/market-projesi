@@ -96,7 +96,7 @@ def google_sheet_baglan():
 urunler = {
     "Doyurucu Yemekler": [
         {"ad": "Dondurulmuş Pizza", "fiyat": 120, "resim": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Ton Balığı (3'lü)", "fiyat": 140, "resim": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Meyve", "fiyat": 140, "resim": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"},
         {"ad": "Hazır Noodle", "fiyat": 15, "resim": "https://images.unsplash.com/photo-1612929633738-8fe01f72810c?auto=format&fit=crop&w=400&q=80"},
         {"ad": "Karışık Kuruyemiş", "fiyat": 80, "resim": "https://images.unsplash.com/photo-1599598425947-330026296d11?auto=format&fit=crop&w=400&q=80"},
     ],
@@ -263,3 +263,4 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
