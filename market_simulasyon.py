@@ -7,45 +7,46 @@ from oauth2client.service_account import ServiceAccountCredentials
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="Kampüs Market Deneyi", page_icon="🛵")
 
-# --- KUSURSUZ CSS HİZALAMA VE TEMA (SMOOTH SCROLL EKLENDİ) ---
+# --- KUSURSUZ CSS HİZALAMA VE TEMA (STICKY SEPET EKLENDİ) ---
 st.markdown("""
     <style>
-    /* YUMUŞAK KAYDIRMA ÖZELLİĞİ */
+    /* YUMUŞAK KAYDIRMA */
     html { scroll-behavior: smooth !important; }
     
     .stApp { background-color: #5d3ebc !important; }
     h1, h2, h3, h4, p, span, label, div[data-testid="stMarkdownContainer"] { color: white !important; }
     
-    /* HIZLI ERİŞİM KATEGORİ BUTONLARI */
-    .nav-link {
-        background-color: #ffd300;
-        color: #5d3ebc !important;
-        padding: 12px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 900;
-        text-align: center;
-        display: block;
-        transition: 0.3s;
-        border: 2px solid transparent;
-    }
-    .nav-link:hover {
-        background-color: #ffecb3;
-        border: 2px solid white;
-        transform: scale(1.03);
+    /* 🚀 YENİ: YAPIŞKAN SEPET (STICKY CART) TASARIMI */
+    div[data-testid="stVerticalBlock"]:has(.sticky-cart) {
+        position: sticky;
+        top: 50px; /* Streamlit'in kendi üst menüsünün altına hizalar */
+        background-color: #4a329c; /* Arka plandan ayırmak için koyu mor */
+        z-index: 999; /* Tüm ürünlerin üstünde süzülmesini sağlar */
+        padding: 15px;
+        border-radius: 15px;
+        border: 2px solid #ffd300;
+        box-shadow: 0px 15px 25px rgba(0,0,0,0.5); /* Havalı bir 3D gölge efekti */
+        margin-bottom: 25px;
     }
     
+    /* HIZLI ERİŞİM KATEGORİ BUTONLARI */
+    .nav-link {
+        background-color: #ffd300; color: #5d3ebc !important; padding: 12px;
+        border-radius: 10px; text-decoration: none; font-weight: 900;
+        text-align: center; display: block; transition: 0.3s; border: 2px solid transparent;
+    }
+    .nav-link:hover { background-color: #ffecb3; border: 2px solid white; transform: scale(1.03); }
+    
+    /* ÜRÜN KARTLARI */
     .product-img {
         width: 100%; height: 150px !important; object-fit: cover !important;
         border-radius: 12px; border: 2px solid #ffd300; margin-bottom: 5px;
     }
-    .product-text-box {
-        height: 60px; display: flex; flex-direction: column;
-        justify-content: flex-start; text-align: center;
-    }
+    .product-text-box { height: 60px; display: flex; flex-direction: column; justify-content: flex-start; text-align: center; }
     .product-title { font-weight: 700; font-size: 15px; line-height: 1.2; margin-bottom: 3px; color: white; }
     .product-price { color: #ffd300; font-weight: 800; font-size: 16px; }
 
+    /* BUTONLAR */
     div.stButton > button:first-child {
         background-color: #ffd300 !important; color: #5d3ebc !important;
         border: none !important; border-radius: 8px !important;
@@ -54,15 +55,10 @@ st.markdown("""
     div.stButton > button:hover { background-color: #ffecb3 !important; transform: scale(1.02); }
     
     .quantity-text { text-align: center; font-weight: 900; font-size: 20px; color: #ffd300; padding-top: 5px; }
-    
     div[data-testid="stMetricLabel"] { color: #e0e0e0 !important; }
     div[data-testid="stMetricValue"] { color: #ffd300 !important; }
     div[data-baseweb="select"] > div { background-color: #4a329c !important; color: white !important; }
-    
-    /* ANCHOR BAŞLIKLARI İÇİN GİZLİ PAY (Yukarıda yapışmasın diye) */
-    .anchor-offset {
-        scroll-margin-top: 80px; 
-    }
+    .anchor-offset { scroll-margin-top: 250px; } /* Sepet yapışkan olunca başlıklar altında kalmasın diye payı artırdık */
     </style>
     """, unsafe_allow_html=True)
 
@@ -78,7 +74,7 @@ def google_sheet_baglan():
     except Exception as e:
         return None
 
-# --- ÜRÜN KATALOĞU (2 ANA KATEGORİYE İNDİRİLDİ) ---
+# --- ÜRÜN KATALOĞU ---
 urunler = {
     "Doyurucu Yemekler": [
         {"ad": "Dondurulmuş Pizza", "fiyat": 120, "resim": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80"},
@@ -157,36 +153,38 @@ if st.session_state.sayfa == 'anket':
             st.session_state.sayfa = 'market'
             st.rerun()
 
-# --- SAYFA 2: SİPARİŞ EKRANI (Hızlı Menü Bağlantılı) ---
+# --- SAYFA 2: SİPARİŞ EKRANI ---
 elif st.session_state.sayfa == 'market':
-    tutar = sum(item['fiyat'] for item in st.session_state.sepet)
-    butce = 400
-    kalan = butce - tutar
-    
     st.title("Dakikalar İçinde Kapında! ⚡")
     
+    # --- YAPIŞKAN (STICKY) SEPET KUTUSU ---
     with st.container():
+        # Bu gizli div, CSS'in bu kutuyu bulup ekrana sabitlemesini sağlar
+        st.markdown("<div class='sticky-cart'></div>", unsafe_allow_html=True)
+        
+        tutar = sum(item['fiyat'] for item in st.session_state.sepet)
+        butce = 400
+        kalan = butce - tutar
+        
         col1, col2, col3 = st.columns(3)
         col1.metric("Kart Limiti", f"{butce} TL")
         col2.metric("Sepet Tutarı", f"{tutar} TL")
         col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
-    
-    if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
-    
-    col_onay, col_bosalt = st.columns([2, 1])
-    with col_onay:
-        if st.button("💳 Siparişi Onayla", use_container_width=True):
-            if kalan < 0: st.warning("Kart bakiyen yetersiz!")
-            elif tutar == 0: st.warning("Sepetin boş!")
-            else:
-                if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
-                else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
-    with col_bosalt:
-        if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
+        
+        if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
+        
+        col_onay, col_bosalt = st.columns([2, 1])
+        with col_onay:
+            if st.button("💳 Siparişi Onayla", use_container_width=True):
+                if kalan < 0: st.warning("Kart bakiyen yetersiz!")
+                elif tutar == 0: st.warning("Sepetin boş!")
+                else:
+                    if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
+                    else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
+        with col_bosalt:
+            if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
 
-    st.markdown("---")
-
-    # --- HIZLI KATEGORİ BUTONLARI (ANCHOR LİNKLER) ---
+    # --- HIZLI KATEGORİ BUTONLARI ---
     st.markdown("""
     <div style="display: flex; gap: 15px; margin-bottom: 25px;">
         <a href="#doyurucu-yemekler" class="nav-link" style="flex: 1;">🍔 Doyurucu Yemekler</a>
@@ -194,11 +192,9 @@ elif st.session_state.sayfa == 'market':
     </div>
     """, unsafe_allow_html=True)
 
-    # ÜRÜN LİSTELEME
+    # --- ÜRÜN LİSTELEME ---
     for kategori, urun_listesi in urunler.items():
-        # Kategori ismine göre gizli anchor (hedef) oluşturma
         kategori_id = "doyurucu-yemekler" if "Doyurucu" in kategori else "gece-krizleri"
-        
         st.markdown(f"<div id='{kategori_id}' class='anchor-offset'></div>", unsafe_allow_html=True)
         st.subheader(kategori)
         
