@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="Kampüs Market Deneyi", page_icon="🛵")
 
-# --- KUSURSUZ CSS HİZALAMA VE TEMA (STICKY SEPET EKLENDİ) ---
+# --- KUSURSUZ CSS HİZALAMA VE TEMA (ALT BAR EKLENDİ) ---
 st.markdown("""
     <style>
     /* YUMUŞAK KAYDIRMA */
@@ -16,17 +16,22 @@ st.markdown("""
     .stApp { background-color: #5d3ebc !important; }
     h1, h2, h3, h4, p, span, label, div[data-testid="stMarkdownContainer"] { color: white !important; }
     
-    /* 🚀 YENİ: YAPIŞKAN SEPET (STICKY CART) TASARIMI */
-    div[data-testid="stVerticalBlock"]:has(.sticky-cart) {
-        position: sticky;
-        top: 50px; /* Streamlit'in kendi üst menüsünün altına hizalar */
-        background-color: #4a329c; /* Arka plandan ayırmak için koyu mor */
-        z-index: 999; /* Tüm ürünlerin üstünde süzülmesini sağlar */
-        padding: 15px;
-        border-radius: 15px;
-        border: 2px solid #ffd300;
-        box-shadow: 0px 15px 25px rgba(0,0,0,0.5); /* Havalı bir 3D gölge efekti */
-        margin-bottom: 25px;
+    /* 🔥 KESİN ÇÖZÜM: EKRANIN ALTINA SABİTLENMİŞ SEPET ÇUBUĞU 🔥 */
+    div[data-testid="stVerticalBlock"]:has(.my-cart-tracker) {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background-color: #2b1d59 !important; /* Arka plandan ayırmak için çok koyu mor */
+        z-index: 99999 !important;
+        padding: 10px 10% 20px 10% !important; /* Yanlardan boşluk */
+        border-top: 4px solid #ffd300 !important;
+        box-shadow: 0px -10px 30px rgba(0,0,0,0.8) !important; /* Yukarı doğru gölge */
+    }
+    
+    /* Sepet altta sabit olduğu için, ürünlerin sepetin arkasında gizli kalmaması için sayfanın altına boşluk ekliyoruz */
+    .main .block-container {
+        padding-bottom: 250px !important;
     }
     
     /* HIZLI ERİŞİM KATEGORİ BUTONLARI */
@@ -55,10 +60,13 @@ st.markdown("""
     div.stButton > button:hover { background-color: #ffecb3 !important; transform: scale(1.02); }
     
     .quantity-text { text-align: center; font-weight: 900; font-size: 20px; color: #ffd300; padding-top: 5px; }
-    div[data-testid="stMetricLabel"] { color: #e0e0e0 !important; }
-    div[data-testid="stMetricValue"] { color: #ffd300 !important; }
+    
+    /* METRİKLER (Sepet Tutarı vb) */
+    div[data-testid="stMetricValue"] { color: #ffd300 !important; font-size: 1.5rem !important; }
+    div[data-testid="stMetricLabel"] { color: #e0e0e0 !important; font-size: 0.9rem !important; }
     div[data-baseweb="select"] > div { background-color: #4a329c !important; color: white !important; }
-    .anchor-offset { scroll-margin-top: 250px; } /* Sepet yapışkan olunca başlıklar altında kalmasın diye payı artırdık */
+    
+    .anchor-offset { scroll-margin-top: 50px; } 
     </style>
     """, unsafe_allow_html=True)
 
@@ -157,34 +165,7 @@ if st.session_state.sayfa == 'anket':
 elif st.session_state.sayfa == 'market':
     st.title("Dakikalar İçinde Kapında! ⚡")
     
-    # --- YAPIŞKAN (STICKY) SEPET KUTUSU ---
-    with st.container():
-        # Bu gizli div, CSS'in bu kutuyu bulup ekrana sabitlemesini sağlar
-        st.markdown("<div class='sticky-cart'></div>", unsafe_allow_html=True)
-        
-        tutar = sum(item['fiyat'] for item in st.session_state.sepet)
-        butce = 400
-        kalan = butce - tutar
-        
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Kart Limiti", f"{butce} TL")
-        col2.metric("Sepet Tutarı", f"{tutar} TL")
-        col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
-        
-        if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
-        
-        col_onay, col_bosalt = st.columns([2, 1])
-        with col_onay:
-            if st.button("💳 Siparişi Onayla", use_container_width=True):
-                if kalan < 0: st.warning("Kart bakiyen yetersiz!")
-                elif tutar == 0: st.warning("Sepetin boş!")
-                else:
-                    if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
-                    else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
-        with col_bosalt:
-            if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
-
-    # --- HIZLI KATEGORİ BUTONLARI ---
+    # --- HIZLI KATEGORİ BUTONLARI ÜSTTE KALDI ---
     st.markdown("""
     <div style="display: flex; gap: 15px; margin-bottom: 25px;">
         <a href="#doyurucu-yemekler" class="nav-link" style="flex: 1;">🍔 Doyurucu Yemekler</a>
@@ -215,6 +196,33 @@ elif st.session_state.sayfa == 'market':
                     with btn_col3:
                         if st.button("➕", key=f"plus_{kategori_id}_{i}", use_container_width=True): sepete_ekle(urun['ad'], urun['fiyat']); st.rerun()
         st.markdown("<br>", unsafe_allow_html=True)
+
+    # --- SİHİRLİ DİV: YAPIŞKAN ALT SEPET KUTUSU ---
+    # Bu kodu en alta yazdık ama CSS onu ekranın her zaman en altına yapıştıracak.
+    with st.container():
+        st.markdown("<div class='my-cart-tracker'></div>", unsafe_allow_html=True) # Bu div CSS'in hedefi!
+        
+        tutar = sum(item['fiyat'] for item in st.session_state.sepet)
+        butce = 400
+        kalan = butce - tutar
+        
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Kart Limiti", f"{butce} TL")
+        col2.metric("Sepet Tutarı", f"{tutar} TL")
+        col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
+        
+        if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
+        
+        col_onay, col_bosalt = st.columns([2, 1])
+        with col_onay:
+            if st.button("💳 Siparişi Onayla", use_container_width=True):
+                if kalan < 0: st.warning("Kart bakiyen yetersiz!")
+                elif tutar == 0: st.warning("Sepetin boş!")
+                else:
+                    if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
+                    else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
+        with col_bosalt:
+            if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
 
 # --- SAYFA 3: BİTİŞ VE DAVRANIŞSAL ANALİZ ŞOVU ---
 elif st.session_state.sayfa == 'bitis':
