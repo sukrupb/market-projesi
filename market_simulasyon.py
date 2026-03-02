@@ -95,20 +95,20 @@ def google_sheet_baglan():
 # --- ÜRÜN KATALOĞU ---
 urunler = {
     "Doyurucu Yemekler": [
-        {"ad": "Dondurulmuş Karışık Pizza", "fiyat": 120, "resim": "https://images.migrosone.com/hemen/product/05061022/05061022-486045-1650x1650.jpg"},
-        {"ad": "Ton Balığı (3'lü Paket)", "fiyat": 140, "resim": "https://cdn.myikas.com/images/0fc5e2e6-3ea7-443f-a09e-daf74b83e708/467a3aee-c80b-4344-820b-e58b14c83d51/image_1512.webp"},
-        {"ad": "Körili Bardak Noodle", "fiyat": 15, "resim": "https://images.migrosone.com/sanalmarket/product/46020971/46020971-f43f84-1650x1650.jpg"},
-        {"ad": "Hazır Çiğköfte", "fiyat": 80, "resim": "https://images.migrosone.com/sanalmarket/product/19009896/19009896-3a9640-1650x1650.jpg"},
-        {"ad": "Konserve Zeytinyağlı Yaprak Sarma", "fiyat": 80, "resim": "https://images.migrosone.com/sanalmarket/product/09060481/09060481_1-a22e60-1650x1650.jpg"},
-        {"ad": "Soğuk Sandiviç", "fiyat": 80, "resim": "https://images.migrosone.com/sanalmarket/product/19000677/19000677-9561b9-1650x1650.jpg"},
+        {"ad": "Dondurulmuş Karışık Pizza", "fiyat": 150, "resim": "https://images.migrosone.com/hemen/product/05061022/05061022-486045-1650x1650.jpg"},
+        {"ad": "Ton Balığı (3'lü Paket)", "fiyat": 160, "resim": "https://cdn.myikas.com/images/0fc5e2e6-3ea7-443f-a09e-daf74b83e708/467a3aee-c80b-4344-820b-e58b14c83d51/image_1512.webp"},
+        {"ad": "Körili Bardak Noodle", "fiyat": 30, "resim": "https://images.migrosone.com/sanalmarket/product/46020971/46020971-f43f84-1650x1650.jpg"},
+        {"ad": "Hazır Çiğköfte", "fiyat": 90, "resim": "https://images.migrosone.com/sanalmarket/product/19009896/19009896-3a9640-1650x1650.jpg"},
+        {"ad": "Konserve Zeytinyağlı Yaprak Sarma", "fiyat": 75, "resim": "https://images.migrosone.com/sanalmarket/product/09060481/09060481_1-a22e60-1650x1650.jpg"},
+        {"ad": "Soğuk Sandiviç", "fiyat": 85, "resim": "https://images.migrosone.com/sanalmarket/product/19000677/19000677-9561b9-1650x1650.jpg"},
     ],
     "Atıştırmalık": [
-        {"ad": "Doritos Taco Cips (Süper Boy)", "fiyat": 45, "resim": "https://images.migrosone.com/sanalmarket/product/05080158/05080158_1-bc8451-1650x1650.jpg"},
-        {"ad": "Milka Oreo Çikolata", "fiyat": 25, "resim": "https://images.migrosone.com/sanalmarket/product/07045245/7045245_1-fe28b9-1650x1650.jpg"},
-        {"ad": "Red Bull Enerji İçeceği (250 ml)", "fiyat": 50, "resim": "https://images.migrosone.com/sanalmarket/product/08110033/08110033-9275b6-1650x1650.jpg"},
-        {"ad": "Coca-Cola (1 Litre)", "fiyat": 30, "resim": "https://images.migrosone.com/sanalmarket/product/08010700/8010700_yan-a2f3a9-1650x1650.jpg"},
-        {"ad": "Pringles Original Cips", "fiyat": 45, "resim": "https://iis-akakce.akamaized.net/p.z?%2F%2Fcdn%2Edsmcdn%2Ecom%2Fty48%2Fproduct%2Fmedia%2Fimages%2F20210106%2F15%2F47789175%2F20439264%2F1%2F1%5Forg%5Fzoom%2Ejpg"},
-        {"ad": "Eti Karam Gurme / Çikolatalı Gofret", "fiyat": 10, "resim": "https://images.migrosone.com/sanalmarket/product/7160817/7160817-b58034-1650x1650.jpg"},
+        {"ad": "Doritos Taco Cips (Süper Boy)", "fiyat": 60, "resim": "https://images.migrosone.com/sanalmarket/product/05080158/05080158_1-bc8451-1650x1650.jpg"},
+        {"ad": "Milka Oreo Çikolata", "fiyat": 50, "resim": "https://images.migrosone.com/sanalmarket/product/07045245/7045245_1-fe28b9-1650x1650.jpg"},
+        {"ad": "Red Bull Enerji İçeceği (250 ml)", "fiyat": 65, "resim": "https://images.migrosone.com/sanalmarket/product/08110033/08110033-9275b6-1650x1650.jpg"},
+        {"ad": "Coca-Cola (1 Litre)", "fiyat": 45, "resim": "https://images.migrosone.com/sanalmarket/product/08010700/8010700_yan-a2f3a9-1650x1650.jpg"},
+        {"ad": "Pringles Original Cips", "fiyat": 130, "resim": "https://iis-akakce.akamaized.net/p.z?%2F%2Fcdn%2Edsmcdn%2Ecom%2Fty48%2Fproduct%2Fmedia%2Fimages%2F20210106%2F15%2F47789175%2F20439264%2F1%2F1%5Forg%5Fzoom%2Ejpg"},
+        {"ad": "Eti Karam Gurme / Çikolatalı Gofret", "fiyat": 25, "resim": "https://images.migrosone.com/sanalmarket/product/7160817/7160817-b58034-1650x1650.jpg"},
     ]
 }
 
@@ -265,6 +265,7 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
 
 
 
