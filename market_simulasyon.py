@@ -128,7 +128,7 @@ def veriyi_kaydet():
         data = st.session_state.kullanici_verisi.copy()
         toplam_tutar = sum(item['fiyat'] for item in st.session_state.sepet)
         sepet_icerigi = ", ".join([item['ad'] for item in st.session_state.sepet])
-        durtusel_liste = ["Patates Cipsi (Büyük)", "Sütlü Çikolata", "Kola (Kutu 330ml)", "Enerji İçeceği", "Çubuk Dondurma"]
+        durtusel_liste = ["Patates Cipsi (Büyük)", "Sütlü Çikolata", "Kola (Kutu 330ml)", "Enerji İçeceği", "Çubuk Dondurma", "Pringles Original Cips", "Doritos Taco Cips (Süper Boy)", "Milka Oreo Çikolata", "Red Bull Enerji İçeceği (250 ml)", "Coca-Cola (1 Litre)", "Eti Karam Gurme / Çikolatalı Gofret"]
         durtusel_skor = sum(1 for item in st.session_state.sepet if item['ad'] in durtusel_liste)
         
         satir = [
@@ -176,36 +176,14 @@ if st.session_state.sayfa == 'anket':
 # --- SAYFA 2: SİPARİŞ EKRANI ---
 elif st.session_state.sayfa == 'market':
     
-    # 🛒 --- YAPIŞKAN SEPET ÖZETİ (SAYFA TEPESİNDE) --- 🛒
-    st.markdown("<div id='sepet-bolumu' class='anchor-offset'></div>", unsafe_allow_html=True)
-    st.title("Dakikalar İçinde Kapında! ⚡")
-    
     tutar = sum(item['fiyat'] for item in st.session_state.sepet)
     butce = 400
     kalan = butce - tutar
-    
-    with st.container():
-        st.markdown("<div style='background-color: #4a329c; padding: 15px; border-radius: 15px; border: 2px solid #ffd300;'>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Kart Limiti", f"{butce} TL")
-        col2.metric("Sepet Tutarı", f"{tutar} TL")
-        col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
-        
-        if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
-        
-        col_onay, col_bosalt = st.columns([2, 1])
-        with col_onay:
-            if st.button("💳 Siparişi Onayla", use_container_width=True):
-                if kalan < 0: st.warning("Kart bakiyen yetersiz!")
-                elif tutar == 0: st.warning("Sepetin boş!")
-                else:
-                    if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
-                    else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
-        with col_bosalt:
-            if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.title("Dakikalar İçinde Kapında! ⚡")
+    
+    # KULLANICIYI BİLGİLENDİREN ÜST MESAJ
+    st.info("👇 Sepet özeti ve sipariş onaylama butonları sayfanın en altındadır.")
 
     # 🍕 --- ÜRÜN LİSTELEME --- 🍕
     for kategori, urun_listesi in urunler.items():
@@ -227,6 +205,33 @@ elif st.session_state.sayfa == 'market':
                     with btn_col3:
                         if st.button("➕", key=f"plus_{kategori}_{i}", use_container_width=True): sepete_ekle(urun['ad'], urun['fiyat']); st.rerun()
         st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # 🛒 --- SEPET ÖZETİ VE ONAYLAMA (SAYFA ALTINA TAŞINDI) --- 🛒
+    st.markdown("<div id='sepet-bolumu' class='anchor-offset'></div>", unsafe_allow_html=True)
+    st.subheader("🛒 Sepet Özeti")
+    
+    with st.container():
+        st.markdown("<div style='background-color: #4a329c; padding: 15px; border-radius: 15px; border: 2px solid #ffd300;'>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Kart Limiti", f"{butce} TL")
+        col2.metric("Sepet Tutarı", f"{tutar} TL")
+        col3.metric("Kalan Limit", f"{kalan} TL", delta_color="normal" if kalan >= 0 else "inverse")
+        
+        if kalan < 0: st.error("⚠️ Bakiye yetersiz! Lütfen sepetini ayarla.")
+        
+        col_onay, col_bosalt = st.columns([2, 1])
+        with col_onay:
+            if st.button("💳 Siparişi Onayla", use_container_width=True):
+                if kalan < 0: st.warning("Kart bakiyen yetersiz!")
+                elif tutar == 0: st.warning("Sepetin boş!")
+                else:
+                    if veriyi_kaydet(): st.session_state.sayfa = 'bitis'; st.rerun()
+                    else: st.error("Sipariş kaydedilemedi. İnternet sorunu olabilir.")
+        with col_bosalt:
+            if st.button("🗑️ Boşalt", use_container_width=True): st.session_state.sepet = []; st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
     # 📱 --- MOBİL İÇİN EKRANIN ALTINDA YÜZEN SİHİRLİ BUTON --- 📱
     # Eğer sepette ürün varsa, bu buton kullanıcının gözünün içine girecek!
@@ -265,10 +270,3 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
-
-
-
-
-
-
-
