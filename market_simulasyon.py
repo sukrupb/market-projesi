@@ -99,6 +99,7 @@ urunler = {
         {"ad": "Ton Balığı (3'lü Paket)", "fiyat": 140, "resim": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"},
         {"ad": "Körili Bardak Noodle", "fiyat": 15, "resim": "https://images.unsplash.com/photo-1612929633738-8fe01f72810c?auto=format&fit=crop&w=400&q=80"},
         {"ad": "Hazır Çiğköfte", "fiyat": 80, "resim": "https://images.unsplash.com/photo-1599598425947-330026296d11?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Konserve Zeytinyağlı Yaprak Sarma (400 gr)", "fiyat": 80, "resim": "https://images.unsplash.com/photo-1599598425947-330026296d11?auto=format&fit=crop&w=400&q=80"},
     ],
     "Gece Krizleri (Atıştırmalık)": [
         {"ad": "Doritos Taco Cips (Süper Boy)", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1566478989037-e124c1b55523?auto=format&fit=crop&w=400&q=80"},
@@ -263,5 +264,6 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
 
 
