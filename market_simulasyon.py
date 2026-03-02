@@ -102,7 +102,7 @@ urunler = {
         {"ad": "Konserve Zeytinyağlı Yaprak Sarma", "fiyat": 80, "resim": "https://images.migrosone.com/sanalmarket/product/09060481/09060481_1-a22e60-1650x1650.jpg"},
         {"ad": "Soğuk Sandiviç", "fiyat": 80, "resim": "https://images.migrosone.com/sanalmarket/product/19000677/19000677-9561b9-1650x1650.jpg"},
     ],
-    "Gece Krizleri (Atıştırmalık)": [
+    "Atıştırmalık": [
         {"ad": "Doritos Taco Cips (Süper Boy)", "fiyat": 45, "resim": "https://images.migrosone.com/sanalmarket/product/05080158/05080158_1-bc8451-1650x1650.jpg"},
         {"ad": "Milka Oreo Çikolata", "fiyat": 25, "resim": "https://images.migrosone.com/sanalmarket/product/07045245/7045245_1-fe28b9-1650x1650.jpg"},
         {"ad": "Red Bull Enerji İçeceği (250 ml)", "fiyat": 50, "resim": "https://images.migrosone.com/sanalmarket/product/08110033/08110033-9275b6-1650x1650.jpg"},
@@ -265,6 +265,7 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
 
 
 
