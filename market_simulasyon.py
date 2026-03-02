@@ -95,18 +95,18 @@ def google_sheet_baglan():
 # --- ÜRÜN KATALOĞU ---
 urunler = {
     "Doyurucu Yemekler": [
-        {"ad": "Dondurulmuş Pizza", "fiyat": 120, "resim": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Meyve", "fiyat": 140, "resim": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Hazır Noodle", "fiyat": 15, "resim": "https://images.unsplash.com/photo-1612929633738-8fe01f72810c?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Karışık Kuruyemiş", "fiyat": 80, "resim": "https://images.unsplash.com/photo-1599598425947-330026296d11?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Dondurulmuş Karışık Pizza", "fiyat": 120, "resim": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Ton Balığı (3'lü Paket)", "fiyat": 140, "resim": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Körili Bardak Noodle", "fiyat": 15, "resim": "https://images.unsplash.com/photo-1612929633738-8fe01f72810c?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Hazır Çiğköfte", "fiyat": 80, "resim": "https://images.unsplash.com/photo-1599598425947-330026296d11?auto=format&fit=crop&w=400&q=80"},
     ],
     "Gece Krizleri (Atıştırmalık)": [
-        {"ad": "Patates Cipsi (Büyük)", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1566478989037-e124c1b55523?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Sütlü Çikolata", "fiyat": 25, "resim": "https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Enerji İçeceği", "fiyat": 50, "resim": "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Kola (Kutu 330ml)", "fiyat": 30, "resim": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Çubuk Dondurma", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1563805042-7684c8e9e533?auto=format&fit=crop&w=400&q=80"},
-        {"ad": "Çubuk Kraker", "fiyat": 10, "resim": "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Doritos Taco Cips (Süper Boy)", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1566478989037-e124c1b55523?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Milka Oreo Çikolata", "fiyat": 25, "resim": "https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Red Bull Enerji İçeceği (250 ml)", "fiyat": 50, "resim": "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Coca-Cola (1 Litre)", "fiyat": 30, "resim": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Pringles Original Cips", "fiyat": 45, "resim": "https://images.unsplash.com/photo-1563805042-7684c8e9e533?auto=format&fit=crop&w=400&q=80"},
+        {"ad": "Eti Karam Gurme / Çikolatalı Gofret", "fiyat": 10, "resim": "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=400&q=80"},
     ]
 }
 
@@ -263,4 +263,5 @@ elif st.session_state.sayfa == 'bitis':
     if st.button("Yeni Katılımcı İçin Başa Dön", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
 
